@@ -58,8 +58,6 @@
       const url = userOption.querySelector('#page').value;
       const method = userOption.querySelector('#type').value;
 
-      console.log(url + "\n" + method);
-
       let response = await fetch(url, {
         method,
         headers: {
