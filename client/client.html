@@ -56,12 +56,13 @@
 
       //Grab the url and method from the html form below
       const url = userOption.querySelector('#page').value;
-      const method = userOption.querySelector('#type').value;
+      const myMethod = userOption.querySelector('#type').value;
+      const method = "get";
 
       let response = await fetch(url, {
         method,
         headers: {
-          'Accept': 'application/json'
+          'Accept': myMethod
         },
       });
 
