@@ -1,13 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <title>Our simple HTTP server</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
-  
+
   <script>
+    const handleResponse = async (response, parseResponse) => {
+      const content = document.querySelector('#content'); // writing to content section
+
+      //Switch based on the response 
+      switch (response.status) {
+        case 200:
+          content.innerHTML = '<b>Success!!!</b>';
+          break;
+        case 201:
+          content.innerHTML = `<b>Created</b>`;
+          break;
+        case 400:
+          content.innerHTML = `<b>Bad Request</b>`;
+          break;
+        case 401:
+          content.innerHTML = '<b>Unauthorized<b>';
+          break;
+        case 403:
+          content.innerHTML = '<b>Forbidden! ): </b>';
+          break;
+        case 404:
+          content.innerHTML = `<b>Resource Not Found</b>`;
+          break;
+        case 500:
+          content.innerHTML = '<b>Internal!</b>';
+          break;
+        case 501:
+          content.innerHTML = `<b>Error code not implemented by client.</b>`;
+          break;
+        default:
+          content.innerHTML = `<b>Error code not implemented by client.</b>`;
+          break;
+      }
+
+      //If we should parse a response (meaning we made a get request)
+      if (parseResponse) {
+        let obj = await response.json();
+
+        let jsonString = JSON.stringify(obj);
+        content.innerHTML += `<p>${jsonString}</p>`;
+      } else {
+        content.innerHTML += '<p>Meta Data Received</p>';
+      }
+
+    };//end handleResponse
+
+    const requestUpdate = async (userOption) => {
+
+      //Grab the url and method from the html form below
+      const url = userOption.querySelector('#page').value;
+      const method = userOption.querySelector('#type').value;
+
+      console.log(url + "\n" + method);
+
+      let response = await fetch(url, {
+        method,
+        headers: {
+          'Accept': 'application/json'
+        },
+      });
+
+      handleResponse(response, method === 'get');
+    };//end request update
+
+    const init = () => {
+      const sendBtn = document.querySelector('#send');
+      const userOptions = document.querySelector('#top');
+
+      const getUsers = (e) => {
+        e.preventDefault();
+        requestUpdate(userOptions);
+        return false;
+      }
+
+      //add event listener
+      sendBtn.addEventListener('click', (getUsers));
+    };
+
+    window.onload = init;
 
   </script>
 </head>
+
 <body>
   <section id="top">
     <h3>Status Code Tests</h3>
@@ -29,4 +110,5 @@
   <section id="content">
   </section>
 </body>
+
 </html>
