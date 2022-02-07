@@ -49,13 +49,8 @@
       response.text().then((resText) => {
         //let contentType = response.headers.get('Content-Type');
 
-        content.appendChild(document.createElement('hr'));
+        content.appendChild(document.createElement('br'));
 
-        const p = document.createElement('p');
-        const h2 = document.createElement('h2');
-
-
-        h2.textContent = "Content type: " + contentType;
         console.log(resText);
 
         //If the server sent back json
@@ -66,8 +61,8 @@
         } else if (contentType === 'text/xml') { //If the server sent back xml
           //Parse the xml into a document and select the data out.
           let parsedResponse = new window.DOMParser().parseFromString(resText, 'text/xml');
-          p.textContent = parsedResponse.querySelector('message').textContent;
-          p.textContent = parsedResponse.querySelector('id').textContent;
+          content.innerHTML = parsedResponse.querySelector('message').textContent;
+          content.innerHTML = parsedResponse.querySelector('id').textContent;
         }
 
 
