@@ -27,10 +27,12 @@ const onRequest = (request, response) => {
 
   const params = query.parse(parsedUrl.query);
 
+  const type = request.headers.accept.split(',');
+
   if (urlStruct[parsedUrl.pathname]) {
-    urlStruct[parsedUrl.pathname](request, response, params);
+    urlStruct[parsedUrl.pathname](request, response, params, type);
   } else {
-    urlStruct.notFound(request, response, params);
+    urlStruct.notFound(request, response, params, type);
   }
 };
 

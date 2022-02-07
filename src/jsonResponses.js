@@ -1,3 +1,12 @@
+const respond = (request, response, status, object, type) => {
+  // set status code and content type (application/json)
+  response.writeHead(status, { 'Content-Type': type });
+
+  response.write(object);
+
+  response.end();
+};
+
 const respondJSON = (request, response, status, object) => {
   // set status code and content type (application/json)
   response.writeHead(status, { 'Content-Type': 'application/json' });
@@ -17,6 +26,23 @@ const success = (request, response) => {
   // send our json with a success status code
   respondJSON(request, response, 200, responseJSON);
 };// end success
+
+const getSuccess = (request, response, status, object, type) => {
+  const myResponse = {
+    message: 'This is a successful response!',
+  };
+
+  if (type === 'text/xml') {
+    let responseXML = '<response>';
+    responseXML = `${responseXML} <message>${myResponse.message}</message>`;
+    responseXML = `${responseXML} <header>${myResponse.header}</header>`;
+    responseXML = `${responseXML} </response>`;
+
+    return respond(request, response, 200, responseXML, 'text/xml');
+  }
+
+  return respondJSON(request, response, 200, myResponse);
+};// get success
 
 // function to show a bad request
 const badRequest = (request, response, params) => {
@@ -100,6 +126,7 @@ const notFound = (request, response) => {
 
 module.exports = {
   success,
+  getSuccess,
   badRequest,
   unauthorized,
   forbidden,
