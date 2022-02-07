@@ -21,6 +21,7 @@ const success = (request, response) => {
   // message to send
   const responseJSON = {
     message: 'This is a successful response!',
+    id: 'Success',
   };
 
   // send our json with a success status code
@@ -48,6 +49,7 @@ const getSuccess = (request, response, status, object, type) => {
 const badRequest = (request, response, params) => {
   const responseJSON = {
     message: 'This request has the required parameters',
+    id: 'badRequest',
   };
 
   // if the request does not contain a valid=true query parameter

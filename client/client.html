@@ -56,20 +56,18 @@
 
         //If the server sent back json
         if (contentType === 'application/json') {
-          //Parse the json back into a javascript object, and display the data.
-          //let parsedResponse = JSON.parse(resText);
           content.innerHTML += parsedResponse.message;
           console.log(resText);
+
         } else if (contentType === 'text/xml') { //If the server sent back xml
-          //Parse the xml into a document and select the data out.
-          //let parsedResponse = new window.DOMParser().parseFromString(resText, 'text/xml');
+
           let responseXML = '<response>';
           responseXML = `${responseXML} <message>${parsedResponse.message}</message>`;
-          //responseXML = `${responseXML} <id>${parsedResponse.id}</id>`;
+          responseXML = `${responseXML} <id>${parsedResponse.id}</id>`;
           responseXML = `${responseXML} </response>`;
+
           content.innerHTML = responseXML;
           console.log(responseXML);
-          //content.innerHTML = parsedResponse.querySelector('id').textContent;
         }
 
 
