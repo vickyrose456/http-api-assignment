@@ -3,13 +3,13 @@
 
 <head>
   <title>Olivieri HTTP API Homework 1</title>
-  <link rel="stylesheet" type="text/css" href="../client/style.css">
+  <link rel="stylesheet" type="text/css" href="style.css">
 
   <script>
-    const handleResponse = async (response) => {
+    const handleResponse = async (response, contentType) => {
       const content = document.querySelector('#content'); // writing to content section
 
-      //Switch based on the response 
+      //Switch based on the response status code 
       switch (response.status) {
         case 200:
           content.innerHTML = '<b>Success!</b>';
@@ -40,9 +40,38 @@
           break;
       }
 
-      let resObj = await response.json();
 
-      content.innerHTML += `<p>${resObj.message}</p>`;
+      //let resObj = await response.json();
+
+      //content.innerHTML += `<p>${resObj.message}</p>`;
+
+      //depending on JSON or XML, handle accordingly 
+      response.text().then((resText) => {
+        //let contentType = response.headers.get('Content-Type');
+
+        content.appendChild(document.createElement('hr'));
+
+        const p = document.createElement('p');
+        const h2 = document.createElement('h2');
+
+
+        h2.textContent = "Content type: " + contentType;
+        console.log(resText);
+
+        //If the server sent back json
+        if (contentType === 'application/json') {
+          //Parse the json back into a javascript object, and display the data.
+          let parsedResponse = JSON.parse(resText);
+          content.innerHTML += parsedResponse.message;
+        } else if (contentType === 'text/xml') { //If the server sent back xml
+          //Parse the xml into a document and select the data out.
+          let parsedResponse = new window.DOMParser().parseFromString(resText, 'text/xml');
+          p.textContent = parsedResponse.querySelector('message').textContent;
+          p.textContent = parsedResponse.querySelector('id').textContent;
+        }
+
+
+      });
 
     };//end handleResponse
 
