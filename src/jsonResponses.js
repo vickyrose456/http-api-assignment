@@ -1,77 +1,64 @@
-const users = {};
-
+//function to send a json object
 const respondJSON = (request, response, status, object) => {
-  // object for our headers
-  // Content-Type for json
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-
-  // send response with json object
-  response.writeHead(status, headers);
+  //set status code and content type (application/json)
+  response.writeHead(status, { 'Content-Type': 'application/json' });
+  //stringify the object (so it doesn't use references/pointers/etc)
+  //but is instead a flat string object.
+  //Then write it to the response.
   response.write(JSON.stringify(object));
+  //Send the response to the client
   response.end();
 };
 
-// function to respond without json body
-// takes request, response and status code
-const respondJSONMeta = (request, response, status) => {
-  // object for our headers
-  // Content-Type for json
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-
-  // send response without json object, just headers
-  response.writeHead(status, headers);
-  response.end();
-};
-
-const getUsers = (request, response) => {
-  // json object to send
+//function to show a success status code
+const success = (request, response) => {
+  //message to send
   const responseJSON = {
-    users,
+    message: 'This is a successful response',
   };
 
+  //send our json with a success status code
+  respondJSON(request, response, 200, responseJSON);
+};
+
+//function to show a bad request without the correct parameters
+const badRequest = (request, response, params) => {
+  //message to send
+  const responseJSON = {
+    message: 'This request has the required parameters',
+  };
+
+  //if the request does not contain a valid=true query parameter
+  if(!params.valid || params.valid !== 'true') {
+    //set our error message
+    responseJSON.message = 'Missing valid query parameter set to true';
+    //give the error a consistent id 
+    responseJSON.id = 'badRequest';
+    //return our json with a 400 bad request code
+    return respondJSON(request, response, 400, responseJSON);
+  }
+
+  //if the parameter is here, send json with a success status code
   return respondJSON(request, response, 200, responseJSON);
 };
 
-const getUsersMeta = (request, response) => respondJSONMeta(request, response, 200);
-
-const updateUser = (request, response) => {
-  const newUser = {
-    createdAt: Date.now(),
-  };
-
-  users[newUser.createdAt] = newUser;
-
-  // return a 201 created status
-  return respondJSON(request, response, 201, newUser);
-};
-
-// function for 404 not found requests with message
+//function to show not found error
 const notFound = (request, response) => {
-  // create error message for response
+  //error message with a description and consistent error id
   const responseJSON = {
     message: 'The page you are looking for was not found.',
     id: 'notFound',
   };
 
-  // return a 404 with an error message
+  //return our json with a 404 not found error code
   respondJSON(request, response, 404, responseJSON);
 };
 
-// function for 404 not found without message
-const notFoundMeta = (request, response) => {
-  // return a 404 without an error message
-  respondJSONMeta(request, response, 404);
-};
-
-// set public modules
+//exports to set functions to public.
+//In this syntax, you can do getIndex:getIndex, but if they
+//are the same name, you can short handle to just getIndex,
 module.exports = {
-  getUsers,
-  getUsersMeta,
-  updateUser,
+  success,
+  badRequest,
   notFound,
-  notFoundMeta,
 };

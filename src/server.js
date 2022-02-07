@@ -1,47 +1,44 @@
-const http = require('http');
-const url = require('url');
-
-const htmlHandler = require('./htmlResponses.js');
+const http = require('http'); //pull in the http server module
+const url = require('url'); //pull in the url module
+//pull in the query string module
+const query = require('querystring'); 
+//pull in our html response handler file
+const htmlHandler = require('./htmlResponses.js'); 
+//pull in our json response handler file
 const jsonHandler = require('./jsonResponses.js');
 
+//set the port. process.env.PORT and NODE_PORT are for servers like heroku
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
+//key:value object to look up URL routes to specific functions
 const urlStruct = {
-  GET: {
-    '/': htmlHandler.getIndex,
-    '/style.css': htmlHandler.getCSS,
-    '/getUsers': jsonHandler.getUsers,
-    // 'success': jsonHandler.getSuccess,
-    // 'badRequest': jsonHandler.getBadRequest,
-    // 'unauthorized': jsonHandler.getUnauthowized,
-    // 'forbidden': jsonHandler.getForbidden,
-    // 'internal': jsonHandler.getInternal,
-    // 'unimplemented': jsonHandler.getUnimplemented,
-    '/updateUser': jsonHandler.updateUser,
-    notFound: jsonHandler.notFound,
-  },
-  HEAD: {
-    '/getUsers': jsonHandler.getUsersMeta,
-    // need to put the meta one b/c it sends back a message and header
-    notFound: jsonHandler.notFoundMeta,
-  },
+  '/': htmlHandler.getIndex,
+  '/success': jsonHandler.success,
+  '/badRequest': jsonHandler.badRequest,
+  notFound: jsonHandler.notFound,
 };
 
+//handle HTTP requests. In node the HTTP server will automatically
+//send this function request and pre-filled response objects.
 const onRequest = (request, response) => {
+  //parse the url using the url module
+  //This will let us grab any section of the URL by name
   const parsedUrl = url.parse(request.url);
+  
+  //grab the query parameters (?key=value&key2=value2&etc=etc)
+  //and parse them into a reusable object by field name
+  const params = query.parse(parsedUrl.query);
 
-  console.dir(parsedUrl.pathname);
-  console.dir(request.method);
-
-  // if it exist, then index in by parsed url
-  if (urlStruct[request.method][parsedUrl.pathname]) {
-    urlStruct[request.method][parsedUrl.pathname](request, response);
+  //check if the path name (the /name part of the url) matches 
+  //any in our url object. If so call that function. If not, default to index.
+  if (urlStruct[parsedUrl.pathname]) {
+    urlStruct[parsedUrl.pathname](request, response, params);
   } else {
-    // url does not exist
-    urlStruct[request.method].notFound(request, response);
+    urlStruct.notFound(request, response, params);
   }
 };
 
-http.createServer(onRequest).listen(port, () => {
-  console.log(`Listening on 127.0.0.1: ${port}`);
-});
+//start HTTP server 
+http.createServer(onRequest).listen(port);
+
+console.log(`Listening on 127.0.0.1: ${port}`);

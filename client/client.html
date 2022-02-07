@@ -6,7 +6,7 @@
   <link rel="stylesheet" type="text/css" href="/style.css">
 
   <script>
-    const handleResponse = async (response, parseResponse) => {
+    const handleResponse = async (response) => {
       const content = document.querySelector('#content'); // writing to content section
 
       //Switch based on the response 
@@ -40,47 +40,58 @@
           break;
       }
 
-      //If we should parse a response (meaning we made a get request)
-      if (parseResponse) {
-        let obj = await response.json();
+      let resObj = await response.json();
 
-        let jsonString = JSON.stringify(obj);
-        content.innerHTML += `<p>${jsonString}</p>`;
-      } else {
-        content.innerHTML += '<p>Meta Data Received</p>';
-      }
+      //Once the response.json() promise is fulfilled we move to this line, which displays the message.
+      content.innerHTML += `<p>${resObj.message}</p>`;
 
     };//end handleResponse
 
-    const requestUpdate = async (userOption) => {
+    const sendFetch = async (url) => {
+      //Call fetch, wait til we get a response, and then store that response in the variable.
+      let response = await fetch(url);
 
-      //Grab the url and method from the html form below
-      const url = userOption.querySelector('#page').value;
-      const myMethod = userOption.querySelector('#type').value;
-      const method = "get";
-
-      let response = await fetch(url, {
-        method,
-        headers: {
-          'Accept': myMethod
-        },
-      });
-
-      handleResponse(response, method === 'get');
-    };//end request update
+      //Call handleResponse with the response we got back from the server.
+      handleResponse(response);
+    };
 
     const init = () => {
+      //Grab references to drop down and button.
       const sendBtn = document.querySelector('#send');
-      const userOptions = document.querySelector('#top');
+      const userOptions = document.querySelector('#page');
 
-      const getUsers = (e) => {
-        e.preventDefault();
-        requestUpdate(userOptions);
-        return false;
-      }
+      const getStatus = (e) => {
+        switch (userOptions.value) {
+          case '/success':
+            sendFetch('/success');
+            break;
+          case '/badRequest':
+            sendFetch("/badRequest");
+            break;
+          case '/unauthorized':
+            sendFetch("/unauthorized");
+            break;
+          case '/forbidden':
+            sendFetch("/forbidden");
+            break;
+          case '/internal':
+            sendFetch("/internal");
+            break;
+          case '/notImplemented':
+            sendFetch("/notImplemented");
+            break;
+          case '/notFound':
+            sendFetch("/notFound");
+            break;
+          default:
+            sendFetch("/notFound");
+            break;
+        }
 
-      //add event listener
-      sendBtn.addEventListener('click', (getUsers));
+      }//end getStatus
+
+
+      sendBtn.addEventListener('click', (getStatus));
     };
 
     window.onload = init;
