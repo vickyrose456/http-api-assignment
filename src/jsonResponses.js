@@ -56,6 +56,36 @@ const unauthorized = (request, response, params) =>{
   return respondJSON(request, response, 200, responseJSON);
 }//end unauth
 
+const forbidden = (request, response) => {
+  const responseJSON = {
+    message: 'You do not have access to this content ):',
+    id: 'forbidden',
+  };
+
+  //return our json with a 403 forbidden error code
+  respondJSON(request, response, 403, responseJSON);
+};//end forbidden
+
+const internal = (request, response) => {
+  const responseJSON = {
+    message: 'Internal Sever Error. Something went wrong.',
+    id: 'internal',
+  };
+
+  //return our json with a 500 internal error code
+  respondJSON(request, response, 500, responseJSON);
+};//end internal
+
+const notImplemented = (request, response) => {
+  const responseJSON = {
+    message: 'A get request for this page has not been implemented yet. Check again later for updated content.',
+    id: 'notImplemented',
+  };
+
+  //return our json with a 501 not implemented error code
+  respondJSON(request, response, 501, responseJSON);
+};//end not implemented 
+
 //function to show not found error
 const notFound = (request, response) => {
   //error message with a description and consistent error id
@@ -72,5 +102,8 @@ module.exports = {
   success,
   badRequest,
   unauthorized,
+  forbidden,
+  internal,
+  notImplemented,
   notFound,
 };
