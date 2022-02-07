@@ -1,10 +1,9 @@
-const http = require('http'); //pull in the http server module
-const url = require('url'); //pull in the url module
-//pull in the query string module
+const http = require('http');
+const url = require('url'); 
+
 const query = require('querystring'); 
-//pull in our html response handler file
+
 const htmlHandler = require('./htmlResponses.js'); 
-//pull in our json response handler file
 const jsonHandler = require('./jsonResponses.js');
 
 //set the port. process.env.PORT and NODE_PORT are for servers like heroku
@@ -15,11 +14,10 @@ const urlStruct = {
   '/': htmlHandler.getIndex,
   '/success': jsonHandler.success,
   '/badRequest': jsonHandler.badRequest,
+  '/unauthorized': jsonHandler.unauthorized,
   notFound: jsonHandler.notFound,
 };
 
-//handle HTTP requests. In node the HTTP server will automatically
-//send this function request and pre-filled response objects.
 const onRequest = (request, response) => {
   //parse the url using the url module
   //This will let us grab any section of the URL by name

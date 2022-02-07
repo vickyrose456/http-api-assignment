@@ -42,16 +42,13 @@
 
       let resObj = await response.json();
 
-      //Once the response.json() promise is fulfilled we move to this line, which displays the message.
       content.innerHTML += `<p>${resObj.message}</p>`;
 
     };//end handleResponse
 
     const sendFetch = async (url) => {
-      //Call fetch, wait til we get a response, and then store that response in the variable.
       let response = await fetch(url);
 
-      //Call handleResponse with the response we got back from the server.
       handleResponse(response);
     };
 
@@ -61,6 +58,7 @@
       const userOptions = document.querySelector('#page');
 
       const getStatus = (e) => {
+        //depending on the current drop down selected, show corresponding message using sendFetch Fns
         switch (userOptions.value) {
           case '/success':
             sendFetch('/success');
@@ -90,7 +88,7 @@
 
       }//end getStatus
 
-
+      //when the button is clicked, go to getStatus fns
       sendBtn.addEventListener('click', (getStatus));
     };
 
