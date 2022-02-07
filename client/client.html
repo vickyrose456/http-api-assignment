@@ -2,8 +2,8 @@
 <html lang="en">
 
 <head>
-  <title>Our simple HTTP server</title>
-  <link rel="stylesheet" type="text/css" href="/style.css">
+  <title>Olivieri HTTP API Homework 1</title>
+  <link rel="stylesheet" type="text/css" href="../client/style.css">
 
   <script>
     const handleResponse = async (response) => {
@@ -46,45 +46,48 @@
 
     };//end handleResponse
 
-    const sendFetch = async (url) => {
+    const sendFetch = async (url, type) => {
       let response = await fetch(url);
 
-      handleResponse(response);
+      //console.log(url + '\n' + type);
+      handleResponse(response, type);
     };
 
     const init = () => {
       //Grab references to drop down and button.
       const sendBtn = document.querySelector('#send');
       const userOptions = document.querySelector('#page');
+      const typeOptions = document.querySelector('#type');
 
       const getStatus = (e) => {
+        const type = typeOptions.value;
         //depending on the current drop down selected, show corresponding message using sendFetch Fns
         switch (userOptions.value) {
           case '/success':
-            sendFetch('/success');
+            sendFetch('/success', type);
             break;
           case '/badRequest':
-            sendFetch("/badRequest");
+            sendFetch("/badRequest", type);
             break;
           case '/unauthorized':
-            sendFetch("/unauthorized");
+            sendFetch("/unauthorized", type);
             break;
           case '/forbidden':
-            sendFetch("/forbidden");
+            sendFetch("/forbidden", type);
             break;
           case '/internal':
-            sendFetch("/internal");
+            sendFetch("/internal", type);
             break;
           case '/notImplemented':
-            sendFetch("/notImplemented");
+            sendFetch("/notImplemented", type);
             break;
           case '/notFound':
-            sendFetch("/notFound");
+            sendFetch("/notFound", type);
             break;
           default:
-            sendFetch("/notFound");
+            sendFetch("/notFound", type);
             break;
-        }
+        }//end switch
 
       }//end getStatus
 
